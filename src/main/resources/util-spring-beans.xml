@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<context:property-placeholder location="classpath:/encryption.properties, classpath:/digest.properties"/>
+
+	<bean id="pbeConfig" class="org.jasypt.encryption.pbe.config.SimpleStringPBEConfig"	scope="singleton">
+		<property name="password" value="${pbencrypter.password}" />
+		<property name="algorithm" value="${pbencrypter.algorithm}" />
+		<property name="keyObtentionIterations" value="${pbencrypter.keyObtentionIterations}" />
+		<property name="providerClassName" value="${pbencrypter.providerClassName}" />
+		<property name="providerName" value="${pbencrypter.providerName}" />
+		<property name="saltGeneratorClassName" value="${pbencrypter.saltGeneratorClassName}" />
+		<property name="stringOutputType" value="${pbencrypter.stringOutputType}" />
+	</bean>
+
+	<bean id="standardPBEStringEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config" ref="pbeConfig"/>
+	</bean>
+
+	<bean id="digesterConfig" class="org.jasypt.digest.config.SimpleStringDigesterConfig" scope="singleton">
+		<property name="algorithm" value="${digest.algorithm}" />
+	    <property name="iterations" value="${digest.iterations}" />
+		<property name="providerClassName" value="${digest.providerClassName}" />
+		<property name="providerName" value="${digest.providerName}" />
+		<property name="saltGeneratorClassName" value="${digest.saltGeneratorClassName}" />
+		<property name="saltSizeBytes" value="${digest.numberOfBytes}" />
+		<property name="stringOutputType" value="${digest.stringOutputType}" />
+		<property name="unicodeNormalizationIgnored" value="${digest.unicodeNormalizationIgnored}" />
+	</bean>
+
+	<bean id="standardStringDigester" class="org.jasypt.digest.StandardStringDigester">
+		<property name="config" ref="digesterConfig"></property>
+	</bean>
+
+	<bean id="encryptionUtil" class="org.ate.util.encryption.EncryptionUtil" scope="singleton">
+		<property name="stringEncryptor" ref="standardPBEStringEncryptor"/>
+		<property name="stringDigester" ref="standardStringDigester"/>
+	</bean>
+</beans>
