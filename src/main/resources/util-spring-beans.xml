@@ -32,7 +32,7 @@
 	</bean>
 
 	<bean id="standardStringDigester" class="org.jasypt.digest.StandardStringDigester">
-		<property name="config" ref="digesterConfig"></property>
+		<property name="config" ref="digesterConfig"/>
 	</bean>
 
 	<bean id="encryptionUtil" class="org.ate.util.encryption.EncryptionUtil" scope="singleton">
